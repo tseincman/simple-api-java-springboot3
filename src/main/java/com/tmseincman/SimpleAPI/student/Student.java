@@ -1,7 +1,12 @@
 package com.tmseincman.SimpleAPI.student;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "tb_student")
 public class Student {
     private Long id;
     private String name;
