@@ -3,6 +3,7 @@ package com.tmseincman.SimpleAPI.student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -29,6 +30,33 @@ public class StudentService {
             throw new IllegalStateException("email taken");
         }
         studentRepository.save(student);
+
+    }
+
+    public void deleteStudent(Long studentId) {
+        if (!studentRepository.existsById(studentId)){
+            throw new IllegalStateException("student with id "+studentId+" does not exists");
+        }
+        studentRepository.deleteById(studentId);
+    }
+
+    @Transactional
+    public void updateStudent(Long studentId, String name, String email) {
+        if (!studentRepository.existsById(studentId)){
+            throw new IllegalStateException("student with id "+studentId+" does not exists");
+        }
+        Student student = studentRepository.findById(studentId).get();
+        if (name != null && name.length() > 0){
+            student.setName(name);
+        }
+        if (email != null && email.length() > 0){
+            Optional<Student> studentOptional = studentRepository.findStudentByEmail(student.getEmail());
+            if (studentOptional.isPresent()){
+                throw new IllegalStateException("email taken");
+            }
+            student.setEmail(email);
+        }
+
 
     }
 }
